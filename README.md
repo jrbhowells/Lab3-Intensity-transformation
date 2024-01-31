@@ -209,7 +209,7 @@ figure; montage({f, g_median})
 ```
 Comment on the results.
 
-## Task 6 - Sharpening the image Laplacian, Sobel and Unsharp filters
+## Task 6 - Sharpening the image with Laplacian, Sobel and Unsharp filters
 
 Now that you are familiar with the Matlab functions _fspecial_ and _imfilter_, explore with various filter kernels to sharpen the moon image stored in the file _moon.tif_. The goal is to make the moon photo sharper so that the craters can be observed better.
 
