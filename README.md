@@ -165,7 +165,7 @@ subplot(1,3,3); imhist(h);
 
 In Lecture 5, we consider a variety of special filter kernels, including: Averaging (box), Gaussian, Laplacian and Sobel. In this task, you will explore the effect of each of this on an image.  In this task, you will explore two type of smoothing filter - the moveing average (box) filter and the Gaussian filter.
 
-Before filtering operation (which is called convolution) can be performed, we need to define our filter kernel.  Matlab provides a function called _fspecial_, which returns different types of filter kernels.  The table below shows the types of kernels that can generated.
+Before filtering operation can be performed, we need to define our filter kernel.  Matlab provides a function called _fspecial_, which returns different types of filter kernels.  The table below shows the types of kernels that can generated.
 
 <p align="center"> <img src="assets/fspecial.jpg" /> </p><BR>
 
@@ -174,7 +174,7 @@ Import an X-ray image of a printed circuit board.
 ```
 clear all
 close all
-f = imread('noisyPCB.jpg');
+f = imread('assets/noisyPCB.jpg');
 imshow(f)
 ```
 The image is littered with noise which is clearly visible.  We shall attempt to reduce the noise by using Box and the Gaussian filters.
@@ -183,7 +183,7 @@ Use the function _fspecial_ to produce a 9x9 averaging filter kernel _ and a 7 x
 
 ```
 w_box = fspecial('average', [9 9])
-w_gauss = fspecial('Gaussian', [7 7], 0.5)
+w_gauss = fspecial('Gaussian', [7 7], 1.0)
 ```
 Note that the coefficients are scaled in such a way that they sum to 1.
 
@@ -191,10 +191,32 @@ Now, apply the filter to the image with:
 ```
 g_box = imfilter(f, w_box, 0);
 g_gauss = imfilter(f, w_gauss, 0);
-close all
+figure
 montage({f, g_box, g_gauss})
 ```
-
 Comment on the results.  
 
 >Test yourself: Explore various kernel size and sigma value for these two filters. Comment on the trade-off between the choice of these parameters and the effect on the image.
+
+## Task 5 - Median Filtering
+
+In both cases with Average and Gaussian filters, noise reduction is companied by reducing in the sharpness of the image.  Median filter provides a better solution if sharpness is to be preserved.  Matlab provides the function _medfilt2(I, [m n], padopt)_ for such an operation.  [m n] defines the kernel dimension. _padopt_ specifies the padding option at the boundaries.  Default is 'zero', which means it is zero-padded.
+
+Try this:
+```
+g_median = medfilt2(f, [7 7], 'zero');
+figure; montage({f, g_median})
+```
+Comment on the results.
+
+## Task 6 - Sharpening the image Laplacian, Sobel and Unsharp filters
+
+Now that you are familiar with the Matlab functions _fspecial_ and _imfilter_, explore with various filter kernels to sharpen the moon image stored in the file _moon.tif_. The goal is to make the moon photo sharper so that the craters can be observed better.
+
+## Task 7 - Test yourself Challenges
+
+* Improve the contrast of a lake and tree image store in file _lake&tree.png_ use any technique you have learned in this lab. Compare your results with others in the class.
+
+* Use the Sobel filter in combination with any other techniques, find the edge of the circles in the image file _circles.tif_.  You are encouraged to discuss and work with your classmates and compare results.
+
+* _office.jpg_ is a colour photograph taken of an office with badd exposure.  Use whatever means at your disposal to improve the lighting and colour of this photo.

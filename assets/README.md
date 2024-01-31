@@ -1,1 +1,1 @@
-This is the folder where you put all your assets such as images.
+This is the folder stores the assets used for this lab.
