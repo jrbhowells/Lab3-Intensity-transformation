@@ -1,0 +1,1 @@
+This is the folder where you put all your assets such as images.
