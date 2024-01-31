@@ -149,7 +149,7 @@ ylabel('Output intensity values', 'fontsize', 9)
 title('Transformation function', 'fontsize', 12)
 ```
 
-The Matlab function _histeq_ compute the CDF of an image, and use this as the intensity transformation function to flatten the histogram.  The following code will perform this function and provide plots of all three images and their histogram.
+The Matlab function _histeq_ computes the CDF of an image, and use this as the intensity transformation function to flatten the histogram.  The following code will perform this function and provide plots of all three images and their histogram.
 
 ```
 h = histeq(g,256);              % histogram equalize g
@@ -161,3 +161,40 @@ subplot(1,3,2); imhist(g);
 subplot(1,3,3); imhist(h);
 ```
 
+## Task 4 - Noise reduction with lowpass filter
+
+In Lecture 5, we consider a variety of special filter kernels, including: Averaging (box), Gaussian, Laplacian and Sobel. In this task, you will explore the effect of each of this on an image.  In this task, you will explore two type of smoothing filter - the moveing average (box) filter and the Gaussian filter.
+
+Before filtering operation (which is called convolution) can be performed, we need to define our filter kernel.  Matlab provides a function called _fspecial_, which returns different types of filter kernels.  The table below shows the types of kernels that can generated.
+
+<p align="center"> <img src="assets/fspecial.jpg" /> </p><BR>
+
+Import an X-ray image of a printed circuit board.
+
+```
+clear all
+close all
+f = imread('noisyPCB.jpg');
+imshow(f)
+```
+The image is littered with noise which is clearly visible.  We shall attempt to reduce the noise by using Box and the Gaussian filters.
+
+Use the function _fspecial_ to produce a 9x9 averaging filter kernel _ and a 7 x 7 Gaussian kernel with sigma = 0.5  as shown below:
+
+```
+w_box = fspecial('average', [9 9])
+w_gauss = fspecial('Gaussian', [7 7], 0.5)
+```
+Note that the coefficients are scaled in such a way that they sum to 1.
+
+Now, apply the filter to the image with:
+```
+g_box = imfilter(f, w_box, 0);
+g_gauss = imfilter(f, w_gauss, 0);
+close all
+montage({f, g_box, g_gauss})
+```
+
+Comment on the results.  
+
+>Test yourself: Explore various kernel size and sigma value for these two filters. Comment on the trade-off between the choice of these parameters and the effect on the image.
