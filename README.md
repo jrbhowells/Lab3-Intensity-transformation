@@ -50,7 +50,7 @@ imshowpair(f, g1, 'montage')
 
 >The 3rd parameter is also in the form of [low_in high_in]. It specifies how the input range is mapped to output range.  So, [1 0] means that the lowest pixel intensity of the input is now mapped to highest pixel intensity at the output and vice versa.  This of course means that all intensities are inverted producing the negative image.
 
-### Gamma correct
+### Gamma correction
 
 Try this:
 ```
