@@ -83,7 +83,7 @@ where *_k_* is often set to the average intensity level and E determines steepne
 clear
 f = imread("assets/bonescan-front.tif");
 r = double(f);
-k = mean2(ff);
+k = mean2(r);
 E = 0.9;
 s = 1 ./ (1.0 + (k ./ (r + eps)) .^ E);
 g = uint8(255*s);
