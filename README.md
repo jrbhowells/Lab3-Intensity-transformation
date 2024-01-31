@@ -50,7 +50,7 @@ imshowpair(f, g1, 'montage')
 
 >The 3rd parameter is also in the form of [low_in high_in]. It specifies how the input range is mapped to output range.  So, [1 0] means that the lowest pixel intensity of the input is now mapped to highest pixel intensity at the output and vice versa.  This of course means that all intensities are inverted producing the negative image.
 
-### Stretching intensity range
+### Gamma correct
 
 Try this:
 ```
@@ -65,5 +65,16 @@ g3 uses gamma correct with gamma = 2.0 as shown in the diagram below. [ ] is the
 
 <p align="center"> <img src="assets/gamma.jpg" /> </p><BR>
 
-This produces a result similar to that of g2 by compressing the low end and expanidn gthe high end of the gray scale.  It however, unlike g2,  retains more of the detail because the intensity now covers the entire gray scale range.
+This produces a result similar to that of g2 by compressing the low end and expanding the high end of the gray scale.  It however, unlike g2,  retains more of the detail because the intensity now covers the entire gray scale range.
+
+## Task 2: Contrast-stretching transformation
+
+Instead of using the *_imadjust function_*, we will apply the constrast stretching transformation in Lecture 4 slide 4 to improve the contrast of another X-ray image.  The transformation function is as shown here:
+
+<p align="center"> <img src="assets/stretch.jpg" /> </p><BR>
+
+Test equation:
+
+When $a \ne 0$, there are two solutions to $(ax^2 + bx + c = 0)$ and they are 
+$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a} $$
 
