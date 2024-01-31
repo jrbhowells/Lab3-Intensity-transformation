@@ -92,3 +92,72 @@ imshowpair(f, g, "montage")
 
 Matlab function *_mean2_* computes the average value of a 2-D matrix.  Since the equation operates on floating numbers, we need to convert the image intensity, which is of type *_uint8_* to *_data type I_*_double_* and store it in _r_.  We then compute the contrast stretched image by applying the stretch function and store it in _s_.  The intensity values of s are normalized to the range of [0.0 1.0] and is in type _double_.  Finally we scale this back to the range [0 255] and covert back to _uint8_.
 
+## Task 3: Contrast Enhancement using Histogram
+
+### PLotting the histogram of an image
+
+Matlab has a built-in function to compute the histogram of an image and plot it.  Try this:
+
+```
+clear all       % clear all variable in workspace
+close all       % close all figure windows
+f=imread('assets/pollen.tif');
+imshow(f)
+figure          % open a new figure window
+imhist(f);      % calculate and plot the histogram
+```
+It is clear that the intesity level of this image is very much squashed up between 70 to 140 in the range [0 255].  One attempt is to stretch the intensity between 0.3 and 0.55 of full scale (i.e. 255) with the built-in function _imadjust_ from the previous tasks. Try this:
+
+```
+close all
+g=imadjust(f,[0.3 0.55]);
+montage({f, g})     % display list of images side-by-side
+figure
+imhist(g);
+```
+The histogram of the adjusted image is more spread out.  It is definitely an improvement but it is still not a terrible good image.
+
+### Histogram, PDF and CDF
+
+Probability distribution function (PDF) is not more than a normalised histogram.  Cumulative distribution function (CDF) is the integration of cumulative sum of the PDF.  Both PDF and CDF can be obtained as below.  Note that _numel_ returns the total number of elements in the matrix.  The following code computs the PDF and CDF for the adjusted image _g_, and plot them side-by-side in a single figure.  The function _subplot(m, n, p)_ specifies which subplot is to be used.
+
+```
+g_pdf = imhist(g) ./ numel(g);  % compute PDF
+g_cdf = cumsum(g_pdf);          % compute CDF
+close all                       % close all figure windows
+imshow(g);
+subplot(1,2,1)                  % plot 1 in a 1x2 subplot
+plot(g_pdf)
+subplot(1,2,2)                  % plot 2 in a 1x2 subplot
+plot(g_cdf)
+```
+
+### Histogram Equalization
+
+To perform histogram equalization, the CDF is used as the intensity transformation function.  The CDF plot made earlier is bare and axes are not labelled nor scaled.  The following code replot the CDF and make it looks pretty.  It is also an opportunity to demonstrate some of Matlab's plotting capabilities.
+
+```
+x = linspace(0, 1, 256);    % x has 256 values equally spaced
+                            %  .... between 0 and 1
+figure
+plot(x, g_cdf)
+axis([0 1 0 1])             % graph x and y range is 0 to 1
+set(gca, 'xtick', 0:0.2:1)  % x tick marks are in steps of 0.2
+set(gca, 'ytick', 0:0.2:1)
+xlabel('Input intensity values', 'fontsize', 9)
+ylabel('Output intensity values', 'fontsize', 9)
+title('Transformation function', 'fontsize', 12)
+```
+
+The Matlab function _histeq_ compute the CDF of an image, and use this as the intensity transformation function to flatten the histogram.  The following code will perform this function and provide plots of all three images and their histogram.
+
+```
+h = histeq(g,256);              % histogram equalize g
+close all
+montage({f, g, h})
+figure;
+subplot(1,3,1); imhist(f);
+subplot(1,3,2); imhist(g);
+subplot(1,3,3); imhist(h);
+```
+
