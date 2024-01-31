@@ -63,7 +63,7 @@ g2 has the gray scale range between 0.5 and 0.75 expanded to the full range.
 
 g3 uses gamma correct with gamma = 2.0 as shown in the diagram below. [ ] is the same as [0 1] by default.
 
-<p align="center"> <img src="assets/gamma.png" /> </p><BR>
+<p align="center"> <img src="assets/gamma.jpg" /> </p><BR>
 
 This produces a result similar to that of g2 by compressing the low end and expanidn gthe high end of the gray scale.  It however, unlike g2,  retains more of the detail because the intensity now covers the entire gray scale range.
 
