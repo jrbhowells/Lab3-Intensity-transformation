@@ -19,22 +19,51 @@ imshow(f)
 ```
 >Note: Make sure you use the semicolon to suppress output. Otherwise, all pixel values will be stream to your display and will take a long time. Use CTRL-C to interrupt the command if you forget.
 
-Examine the image data store in the matrix *_'f'_*:
+Check the dimension of f on the right window pane of Matlab. Examine the image data store in the matrix *_'f'_*:
 
 ```
 f(3,10)             % print the intensity of pixel(3,10)
 imshow(f(1:241,:))  % display only to top half of the image
 ```
-Indexing of matrix in Matlab is (row, column).  You use *_':'_* to slice the data.  (1:241, :) means rows 1 to 241, and all coloumns.
+Indices of matrix in Matlab is of the format: (row, column).  You can use *_':'_* to *_slice_* the data.  (1:241, :) means only rows 1 to 241, and all coloumns are used.  The default is the entire matrix.
 
-**Test yourself**: Now, display the right half of the image. Capture it for your logbook.
+To find the maximum and minimum intensity value of the image, do this:
+```
+[fmin, fmax] = bounds(f(:)))
+```
+*_bounds_* returns the maximum and minimum values in the entire image f. The index (:) means every columns. If this is not specified, Matlab will return the max and min values for each column as row vector.
+
+Since the data type for f is uint8, the full intensity range should be [0 255].  Is it close to the full range?
+
+**Test yourself**: Display the right half of the image. Capture it for your logbook.
 
 ### Negative image
 
 To compute the negative image and display both original and the negative image side-by-side, do this:
 
 ```
-g = imadjust(f, [0 1], [1 0])
+g1 = imadjust(f, [0 1], [1 0])
 figure                          % open a new figure window
-imshowpair(f, g, 'montage')
+imshowpair(f, g1, 'montage')
 ```
+>The 2nd parameter is in the form of [low_in high_in], where the values are between 0 and 1.  [0 1] means that the input image is to be adjusted to within 1% of the bottom and top pixel values.  
+
+>The 3rd parameter is also in the form of [low_in high_in]. It specifies how the input range is mapped to output range.  So, [1 0] means that the lowest pixel intensity of the input is now mapped to highest pixel intensity at the output and vice versa.  This of course means that all intensities are inverted producing the negative image.
+
+### Stretching intensity range
+
+Try this:
+```
+g2 = imadjust(f, [0.5 0.75], [0 1]);
+g3 = imadjust(f, [ ], [ ], 2);
+figure
+imshowpair(g2, g3, 'montage')
+```
+g2 has the gray scale range between 0.5 and 0.75 expanded to the full range.
+
+g3 uses gamma correct with gamma = 2.0 as shown in the diagram below. [ ] is the same as [0 1] by default.
+
+<p align="center"> <img src="assets/gamma.png" /> </p><BR>
+
+This produces a result similar to that of g2 by compressing the low end and expanidn gthe high end of the gray scale.  It however, unlike g2,  retains more of the detail because the intensity now covers the entire gray scale range.
+
