@@ -69,13 +69,26 @@ This produces a result similar to that of g2 by compressing the low end and expa
 
 ## Task 2: Contrast-stretching transformation
 
-Instead of using the *_imadjust function_*, we will apply the constrast stretching transformation in Lecture 4 slide 4 to improve the contrast of another X-ray image.  The transformation function is as shown here:
+Instead of using the *_imadjust function_*, we will apply the constrast stretching transformation function in Lecture 4 slide 4 to improve the contrast of another X-ray image.  The transformation function is as shown here:
 
 <p align="center"> <img src="assets/stretch.jpg" /> </p><BR>
 
-Test equation:
-
-When $a \ne 0$, there are two solutions to $(ax^2 + bx + c = 0)$ and they are 
-$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$
+The equation of this function is:
 
 $$s = T(r) = {1 \over 1 + (k/r)^E}$$
+
+where *_k_* is often set to the average intensity level and E determines steepness of the function. Note that the 
+
+```
+clear
+f = imread("assets/bonescan-front.tif");
+r = double(f);
+k = mean2(ff);
+E = 0.9;
+s = 1 ./ (1.0 + (k ./ (r + eps)) .^ E);
+g = uint8(255*s);
+imshowpair(f, g, "montage")
+```
+
+Matlab function *_mean2_* computes the average value of a 2-D matrix.  Since the equation operates on floating numbers, we need to convert the image intensity, which is of type *_uint8_* to *_data type I_*_double_* and store it in _r_.  We then compute the contrast stretched image by applying the stretch function and store it in _s_.  The intensity values of s are normalized to the range of [0.0 1.0] and is in type _double_.  Finally we scale this back to the range [0 255] and covert back to _uint8_.
+
