@@ -59,9 +59,9 @@ g3 = imadjust(f, [ ], [ ], 2);
 figure
 montage({g2,g3})
 ```
-g2 has the gray scale range between 0.5 and 0.75 mapped to the full range.
+_g2_ has the gray scale range between 0.5 and 0.75 mapped to the full range.
 
-g3 uses gamma correct with gamma = 2.0 as shown in the diagram below. [ ] is the same as [0 1] by default.
+_g3_ uses gamma correct with gamma = 2.0 as shown in the diagram below. [ ] is the same as [0 1] by default.
 
 <p align="center"> <img src="assets/gamma.jpg" /> </p><BR>
 
@@ -121,11 +121,11 @@ montage({f, g})     % display list of images side-by-side
 figure
 imhist(g);
 ```
-The histogram of the adjusted image is more spread out.  It is definitely an improvement but it is still not a terrible good image.
+The histogram of the adjusted image is more spread out.  It is definitely an improvement but it is still not a good image.
 
 ### Histogram, PDF and CDF
 
-Probability distribution function (PDF) is not more than a normalised histogram.  Cumulative distribution function (CDF) is the integration of cumulative sum of the PDF.  Both PDF and CDF can be obtained as below.  Note that _numel_ returns the total number of elements in the matrix.  The following code computs the PDF and CDF for the adjusted image _g_, and plot them side-by-side in a single figure.  The function _subplot(m, n, p)_ specifies which subplot is to be used.
+Probability distribution function (PDF) is simply a normalised histogram.  Cumulative distribution function (CDF) is the integration of cumulative sum of the PDF.  Both PDF and CDF can be obtained as below.  Note that _numel_ returns the total number of elements in the matrix.  The following code computs the PDF and CDF for the adjusted image _g_, and plot them side-by-side in a single figure.  The function _subplot(m, n, p)_ specifies which subplot is to be used.
 
 ```
 g_pdf = imhist(g) ./ numel(g);  % compute PDF
