@@ -1,15 +1,15 @@
 # Lab 3 - Intensity Transformation and Spatial Filtering
 *_Peter Cheung, version 1.0, 1 Feb 2024_*
 
-This lab session aims to demonstrate the contents of Lectures 4 and 5 with image files processed on Matlab.  The choice of Matlab is driven by their excellent set of functions included in the Image Processing Toolbox.  As Design Engineers, it is more important for you to understand the principles and then use ready-made libraries to perform processing on visual data, then to write low-level code to implement the algorithms.
+This lab session aims to demonstrate the topics covered in Lectures 4 and 5 using Matlab.  The choice of Matlab is driven by their excellent set of functions included in the Image Processing Toolbox.  As Design Engineers, it is more important for you to understand the principles and then use ready-made libraries to perform processing on visual data, than to write low-level code to implement the algorithms.
 
-Clone this repo to your laptop and do all your work using your local copy.
+Clone this repo to your laptop and do all your work using your local copy.  Remember to keep a log of your work in your repo.
 
-## Task 1: Contrast adjustment with *_function imadjust_*
+## Task 1 - Contrast enhancement with function imadjust
 
 ### Importing an image
 
-Check out the image file *_breastXray.tif_* stored in the assets folder and read this into the matrix *_f_*, and display it:
+Check what is on image file *_breastXray.tif_* stored in the assets folder and read the image data into the matrix *_f_*, and display it:
 
 ```
 clear all
@@ -17,38 +17,38 @@ imfinfo('assets/breastXray.tif')
 f = imread('assets/breastXray.tif');
 imshow(f)
 ```
->Note: Make sure you use the semicolon to suppress output. Otherwise, all pixel values will be stream to your display and will take a long time. Use CTRL-C to interrupt the command if you forget.
+>Note: Use the semicolon to suppress output. Otherwise, all pixel values will be stream to your display and will take a long time. Use CTRL-C to interrupt.
 
-Check the dimension of f on the right window pane of Matlab. Examine the image data store in the matrix *_'f'_*:
+Check the dimension of _f_ on the right window pane of Matlab. Examine the image data stored:
 
 ```
 f(3,10)             % print the intensity of pixel(3,10)
-imshow(f(1:241,:))  % display only to top half of the image
+imshow(f(1:241,:))  % display only top half of the image
 ```
-Indices of matrix in Matlab is of the format: (row, column).  You can use *_':'_* to *_slice_* the data.  (1:241, :) means only rows 1 to 241, and all coloumns are used.  The default is the entire matrix.
+Indices of 2D matrix in Matlab is of the format: (row, column).  You can use *_':'_* to *_slice_* the data.  *_(1:241 , : )_* means only rows 1 to 241 and all columns are used.  The default is the entire matrix.
 
-To find the maximum and minimum intensity value of the image, do this:
+To find the maximum and minimum intensity values of the image, do this:
 ```
-[fmin, fmax] = bounds(f(:)))
+[fmin, fmax] = bounds(f(:))
 ```
-*_bounds_* returns the maximum and minimum values in the entire image f. The index (:) means every columns. If this is not specified, Matlab will return the max and min values for each column as row vector.
+*_bounds_* returns the maximum and minimum values in the entire image f. The index ( : ) means every columns. If this is not specified, Matlab will return the max and min values for each column as 2 row vectors.
 
-Since the data type for f is uint8, the full intensity range should be [0 255].  Is it close to the full range?
+Since the data type for _f_ is _uint8_, the full intensity range is [0 255].  Is the intensity of _f_ close to the full range?
 
 **Test yourself**: Display the right half of the image. Capture it for your logbook.
 
 ### Negative image
 
-To compute the negative image and display both original and the negative image side-by-side, do this:
+To compute the negative image and display both the original and the negative image side-by-side, do this:
 
 ```
 g1 = imadjust(f, [0 1], [1 0])
 figure                          % open a new figure window
 imshowpair(f, g1, 'montage')
 ```
->The 2nd parameter is in the form of [low_in high_in], where the values are between 0 and 1.  [0 1] means that the input image is to be adjusted to within 1% of the bottom and top pixel values.  
+>The 2nd parameter of _imadjust_ is in the form of [low_in high_in], where the values are between 0 and 1.  [0 1] means that the input image is to be adjusted to within 1% of the bottom and top pixel values.  
 
->The 3rd parameter is also in the form of [low_in high_in]. It specifies how the input range is mapped to output range.  So, [1 0] means that the lowest pixel intensity of the input is now mapped to highest pixel intensity at the output and vice versa.  This of course means that all intensities are inverted producing the negative image.
+>The 3rd parameter is also in the form of [low_out high_out]. It specifies how the input range is mapped to output range.  So, [1 0] means that the lowest pixel intensity of the input is now mapped to highest pixel intensity at the output and vice versa.  This of course means that all intensities are inverted, producing the negative image.  The same thing can be achieved using _function imcomplement_.
 
 ### Gamma correction
 
@@ -57,15 +57,15 @@ Try this:
 g2 = imadjust(f, [0.5 0.75], [0 1]);
 g3 = imadjust(f, [ ], [ ], 2);
 figure
-imshowpair(g2, g3, 'montage')
+montage({g2,g3})
 ```
-g2 has the gray scale range between 0.5 and 0.75 expanded to the full range.
+g2 has the gray scale range between 0.5 and 0.75 mapped to the full range.
 
 g3 uses gamma correct with gamma = 2.0 as shown in the diagram below. [ ] is the same as [0 1] by default.
 
 <p align="center"> <img src="assets/gamma.jpg" /> </p><BR>
 
-This produces a result similar to that of g2 by compressing the low end and expanding the high end of the gray scale.  It however, unlike g2,  retains more of the detail because the intensity now covers the entire gray scale range.
+This produces a result similar to that of g2 by compressing the low end and expanding the high end of the gray scale.  It however, unlike g2,  retains more of the details because the intensity now covers the entire gray scale range.  _function montage_ stitches together images in the list specified within { }.
 
 ## Task 2: Contrast-stretching transformation
 
@@ -80,23 +80,29 @@ $$s = T(r) = {1 \over 1 + (k/r)^E}$$
 where *_k_* is often set to the average intensity level and E determines steepness of the function. Note that the 
 
 ```
-clear
-f = imread("assets/bonescan-front.tif");
-r = double(f);
-k = mean2(r);
+clear all       % clear all variables
+close all       % close all figure windows
+f = imread('assets/bonescan-front.tif');
+r = double(f);  % uint8 to double conversion
+k = mean2(r);   % find mean intensity of image
 E = 0.9;
 s = 1 ./ (1.0 + (k ./ (r + eps)) .^ E);
 g = uint8(255*s);
 imshowpair(f, g, "montage")
 ```
+_esp_ is a special Matlab constant which has the smallest value possible for a double precision floating point number on your computer.  Adding this to _r_ is necessary to avoid division by 0.
 
-Matlab function *_mean2_* computes the average value of a 2-D matrix.  Since the equation operates on floating numbers, we need to convert the image intensity, which is of type *_uint8_* to *_data type I_*_double_* and store it in _r_.  We then compute the contrast stretched image by applying the stretch function and store it in _s_.  The intensity values of s are normalized to the range of [0.0 1.0] and is in type _double_.  Finally we scale this back to the range [0 255] and covert back to _uint8_.
+Matlab function *_mean2_* computes the average value of a 2-D matrix.  Since the equation operates on floating numbers, we need to convert the image intensity, which is of type _uint8_ to type _double_ and store it in _r_.  We then compute the contrast stretched image by applying the stretch function element-by-element, and store the result in _s_.  
+
+The intensity values of s are normalized to the range of [0.0 1.0] and is in type _double_.  Finally we scale this back to the range [0 255] and covert back to _uint8_.
+
+Discuss the results with your classmates and record your observations in your logbook.
 
 ## Task 3: Contrast Enhancement using Histogram
 
 ### PLotting the histogram of an image
 
-Matlab has a built-in function to compute the histogram of an image and plot it.  Try this:
+Matlab has a built-in function _imhist_ to compute the histogram of an image and plot it.  Try this:
 
 ```
 clear all       % clear all variable in workspace
