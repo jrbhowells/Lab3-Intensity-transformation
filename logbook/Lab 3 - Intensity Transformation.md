@@ -9,17 +9,17 @@ f = imread('assets/breastXray.tif');
 [fmin, fmax] = bounds(f(:))
 ```
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled.png)
+![Untitled](img/Untitled.png)
 
 As we can see, intensities are stored as uint8s, i.e. they can take any value 0-255.
 
 ### Displaying right half of image:
 
 ```matlab
-imshow(f(:, 241:end))
+imshow(f(:, 241:482))
 ```
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%201.png)
+![Untitled](img/Untitled%201.png)
 
 ### Inverting Image:
 
@@ -31,7 +31,7 @@ figure
 imshowpair(f, g1, 'montage')
 ```
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%202.png)
+![Untitled](img/Untitled%202.png)
 
 ### Gamma Correction:
 
@@ -46,7 +46,7 @@ In the first (`g2`) line above, we map intensity to be from 0.5 to 0.75 of origi
 
 `g3` applies a gamma correction at gamma = 2.
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%203.png)
+![Untitled](img/Untitled%203.png)
 
 We can see that the `g2` mapping method removes data - large chunks of the image are black or white. If we don’t want this, the gamma `g3` correction preserves more data, but still biases towards lighter areas.
 
@@ -54,7 +54,7 @@ We can see that the `g2` mapping method removes data - large chunks of the image
 
 We can also use contrast stretching to extract more information from the image.
 
-![stretch.jpg](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/stretch.jpg)
+![stretch.jpg](img/stretch.jpg)
 
 $$
 s = T(r) = {1 \over 1 + (k/r)^E}
@@ -72,7 +72,7 @@ g = uint8(255*s); % Cinvert back to 0 to 255
 imshowpair(f, g, "montage")
 ```
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%204.png)
+![Untitled](img/Untitled%204.png)
 
 This function is essentially expanding the centre of the intensity scale of the image, without actually removing data at the edges - it is compressing it, but not into a single value. It allows us to thee the body of the person in the image, not just their bone structure.
 
@@ -80,9 +80,9 @@ This function is essentially expanding the centre of the intensity scale of the 
 
 MATLAB has a builtin `imhist()` for plotting a histogram from an image:
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%205.png)
+![Untitled](img/Untitled%205.png)
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%206.png)
+![Untitled](img/Untitled%206.png)
 
 We can see that the intensity of this particular image is compressed into an intensity range of ~75~140, which means we can easily enhance the contrast using `imadjust()`
 
@@ -97,9 +97,9 @@ subplot(1,2,2)
 imhist(g)
 ```
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%207.png)
+![Untitled](img/Untitled%207.png)
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%208.png)
+![Untitled](img/Untitled%208.png)
 
 We can see that the new histogram is a great improvement on the old one.
 
@@ -107,11 +107,11 @@ We can see that the new histogram is a great improvement on the old one.
 
 A PDF is simply a normalised histogram, while a CDF is a cumulative distribution function - we sum the histogram as we go. We can compute the PDF by normalising:`g_pdf = imhist(g) ./ numel(g);` and the CDF by using the `cumsum()` function on the `g_pdf`. We can plot this:
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%209.png)
+![Untitled](img/Untitled%209.png)
 
 Histogram equalisation uses the CDF as the function applied to each pixel. To do this, we first need to scale the cumulative plot so that it has 256 values from 0 to 1:
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2010.png)
+![Untitled](img/Untitled%2010.png)
 
 ```matlab
 plot(linspace(0, 1, 256), g_cdf) % Plot from 0 to 1
@@ -133,9 +133,9 @@ h = histeq(g,256);
 
 We can plot this new image `h` against the original `f` and intermediate `g`.
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2011.png)
+![Untitled](img/Untitled%2011.png)
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2012.png)
+![Untitled](img/Untitled%2012.png)
 
 # **Task 4 - Noise reduction with lowpass filter**
 
@@ -157,11 +157,11 @@ subplot(1,3,3)
 imshow(g_gauss)
 ```
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2013.png)
+![Untitled](img/Untitled%2013.png)
 
 Changing the sigma parameter in the gaussian filter produces different levels of blur:
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2014.png)
+![Untitled](img/Untitled%2014.png)
 
 The higher sigma we choose, the more pronounced the blurring - and the more effective the de-noising.
 
@@ -173,7 +173,7 @@ We can actually preserve sharpness in the image by using a *median* filter to pe
 g_median = medfilt2(f, [7 7], 'zero');
 ```
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2015.png)
+![Untitled](img/Untitled%2015.png)
 
 As can be seen, the de-noising now doesn’t remove the detail from the image - the edges are still sharp!
 
@@ -218,7 +218,7 @@ title('Sobel')
 
 Here, subplots are used as they allow labelling of the plots - even though it puts them further apart.
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2016.png)
+![Untitled](img/Untitled%2016.png)
 
 Here we apply a Laplacian filter to extract the edges, and then normalise it to be 0-1. We can see all the edges of the craters - but it’s not a realistic image.
 
@@ -230,16 +230,16 @@ Unsharp blurs the image and uses it to create an edge mask, and then adds that t
 
 Three methods were tried - of these, applying a histagram filter (on the right) proved to be the most effective.
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2017.png)
+![Untitled](img/Untitled%2017.png)
 
 ## Circles
 
-First, the contrast was stretched by removing intensities 0-0.5 and rescaling, and a Gaussian filter sigma = 0.5 was applied to brighten the image. Then, the Sobel filter builtin in MATLAB was applied - this is designed to detect horizontal edges, hence why the top and bottom half of pbjects appear differently on the filter.
+First, the contrast was stretched by removing intensities 0-0.5 and rescaling, and a Gaussian filter sigma = 0.5 was applied to brighten the image. Then, the Sobel filter builtin in MATLAB was applied - this is designed to detect horizontal edges, hence why the top and bottom half of objects appear differently on the filter.
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2018.png)
+![Untitled](img/Untitled%2018.png)
 
 ## Office
 
 A colour image of an office. First, a histogram filter was applied to the image to increase contrast. Then a gamma correction could be applied (to all three channels - correcting one channel was tried but did not help). Finally median filter denoising was tried - this lost some clarity, but did reduce the noise in the image slightly.
 
-![Untitled](Lab%203%20-%20Intensity%20Transformation%201091615858d146daac14e7278d647fd3/Untitled%2019.png)
+![Untitled](img/Untitled%2019.png)
